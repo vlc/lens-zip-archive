@@ -5,6 +5,9 @@ import Control.Lens
 import Data.ByteString.Lazy
 import Data.Word
 
+------------------------
+-- Archive
+
 archiveEntries :: Simple Lens Archive [Entry]
 archiveEntries f a = z <$> f (zEntries a) where z x = a { zEntries = x }
 
@@ -13,6 +16,9 @@ archiveSignature f a = z <$> f (zSignature a) where z x = a { zSignature = x }
 
 archiveComment :: Simple Lens Archive ByteString
 archiveComment f a = z <$> f (zComment a) where z x = a { zComment = x }
+
+------------------------
+-- Entry
 
 entryRelativePath :: Simple Lens Entry FilePath
 entryRelativePath f a = z <$> f (eRelativePath a) where z x = a { eRelativePath = x}
@@ -46,3 +52,20 @@ entryExternalFileAttributes f a = z <$> f (eExternalFileAttributes a) where z x 
 
 entryCompressedData :: Simple Lens Entry ByteString
 entryCompressedData f a = z <$> f (eCompressedData a) where z x = a { eCompressedData = x}
+
+------------------------
+-- Compression Method
+
+_Deflate :: Prism' CompressionMethod ()
+_Deflate =
+  prism' (\_ -> Deflate)
+         (\v -> case v of
+                  Deflate -> Just ()
+                  _ -> Nothing)
+
+_NoCompression :: Prism' CompressionMethod ()
+_NoCompression =
+  prism' (\_ -> NoCompression)
+         (\v -> case v of
+                  NoCompression -> Just ()
+                  _ -> Nothing)
